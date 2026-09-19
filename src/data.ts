@@ -71,10 +71,9 @@ jobs:
           if [ ! -d "android" ]; then
             echo "Android directory not found, adding Android platform..."
             npx cap add android
-          else
-            echo "Android directory exists, syncing assets..."
-            npx cap sync android
           fi
+          echo "Syncing web assets to native Android..."
+          npx cap sync android
 
       - name: Grant Execute Permission for Gradlew
         run: |
