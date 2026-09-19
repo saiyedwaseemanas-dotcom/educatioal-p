@@ -1,0 +1,6 @@
+{
+  "name": "GitHub APK Builder",
+  "description": "Automated Android APK builder and Capacitor workflow configuration for GitHub Actions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

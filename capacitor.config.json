@@ -1,0 +1,8 @@
+{
+  "appId": "com.github.apkbuilder.app",
+  "appName": "GitHub APK Builder",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
