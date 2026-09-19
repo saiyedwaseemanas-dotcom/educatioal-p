@@ -70,15 +70,17 @@ jobs:
         run: |
           if [ ! -d "android" ]; then
             echo "Android directory not found, adding Android platform..."
-            npx cap add android
+            npx --yes @capacitor/cli add android
           fi
           echo "Syncing web assets to native Android..."
-          npx cap sync android
+          npx --yes @capacitor/cli sync android
 
       - name: Configure Android SDK Location
         run: |
+          mkdir -p android
           echo "sdk.dir=$ANDROID_HOME" > android/local.properties
           if [ -f "android/gradlew" ]; then
+            sed -i -e 's/\r$//' android/gradlew
             chmod +x android/gradlew
           fi
 
@@ -86,13 +88,25 @@ jobs:
         if: \${{ github.event.inputs.build_type != 'release' }}
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          if [ -f "./gradlew" ]; then
+            sed -i -e 's/\r$//' gradlew
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon --stacktrace
+          else
+            gradle assembleDebug --no-daemon --stacktrace
+          fi
 
       - name: Build Release APK (Unsigned)
         if: \${{ github.event.inputs.build_type == 'release' }}
         run: |
           cd android
-          ./gradlew assembleRelease --no-daemon --stacktrace
+          if [ -f "./gradlew" ]; then
+            sed -i -e 's/\r$//' gradlew
+            chmod +x gradlew
+            ./gradlew assembleRelease --no-daemon --stacktrace
+          else
+            gradle assembleRelease --no-daemon --stacktrace
+          fi
 
       - name: Locate and Prepare APK
         run: |
