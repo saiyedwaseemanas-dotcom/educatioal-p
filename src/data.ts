@@ -46,11 +46,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 20
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "npm"
+          node-version: 22
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -62,7 +61,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Dependencies
-        run: npm ci || npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build Web Assets (Vite)
         run: npm run build

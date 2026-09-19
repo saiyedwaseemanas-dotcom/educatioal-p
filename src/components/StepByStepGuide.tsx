@@ -43,14 +43,13 @@ export const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Repository is 100% Pre-Configured</span>
+              <span>Fix Applied: Lock File Requirement Removed</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
               Build Android APKs Automatically on GitHub
             </h1>
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              We have already installed <span className="text-emerald-400 font-mono">Capacitor</span>, configured the native <span className="text-emerald-400 font-mono">android/</span> project structure, and generated the complete <span className="text-emerald-400 font-mono">.github/workflows/build-apk.yml</span> file.
-              Whenever you push to GitHub, GitHub Actions compiles the APK in the cloud.
+              We resolved the GitHub Actions build error (<code className="text-amber-300">Dependencies lock file is not found</code>). The workflow has been updated to remove the strict npm cache lockfile check and use <code className="text-emerald-300">npm install --legacy-peer-deps</code> with Node.js 22.
             </p>
           </div>
 
@@ -59,7 +58,7 @@ export const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
               onClick={onGoToWorkflow}
               className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm transition-all shadow-lg shadow-emerald-500/20"
             >
-              <span>View Workflow YAML</span>
+              <span>View Updated Workflow</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
@@ -68,6 +67,41 @@ export const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
             >
               <span>App ID & Package Name</span>
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Resolution Callout Banner */}
+      <div className="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 shadow-lg bg-emerald-950/10">
+        <div className="flex items-start space-x-3.5">
+          <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl shrink-0 mt-0.5">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
+          <div className="space-y-2 text-xs">
+            <h3 className="text-sm font-bold text-white flex items-center space-x-2">
+              <span>Why the build failed and what was fixed:</span>
+            </h3>
+            <p className="text-slate-300 leading-relaxed">
+              <strong className="text-rose-400">The Cause:</strong> GitHub Actions failed at <code className="text-slate-200">actions/setup-node@v4</code> with <code className="text-rose-300 font-mono text-[11px]">"Dependencies lock file is not found"</code> because the step specified <code className="text-slate-200 font-mono text-[11px]">cache: "npm"</code>, which strictly requires a committed <code className="text-slate-200 font-mono text-[11px]">package-lock.json</code>.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-300 pt-1">
+              <div className="flex items-start space-x-2 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span><strong>Removed cache lock requirement:</strong> Setup-node now runs cleanly without halting on missing lock files.</span>
+              </div>
+              <div className="flex items-start space-x-2 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span><strong>Added --legacy-peer-deps:</strong> Resolves npm peer dependency conflicts smoothly during installation.</span>
+              </div>
+              <div className="flex items-start space-x-2 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span><strong>Upgraded to Node.js 22:</strong> Eliminates the deprecation warning for Node 20.</span>
+              </div>
+              <div className="flex items-start space-x-2 bg-slate-950/80 p-2.5 rounded-lg border border-slate-800">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span><strong>Generated package-lock.json:</strong> Now included in the repository workspace.</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -209,7 +243,7 @@ export const StepByStepGuide: React.FC<StepByStepGuideProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300">
                     <div className="flex items-center space-x-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                      <span>Sets up Node.js 20 & Java 17</span>
+                      <span>Sets up Node.js 22 & Java 17</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
