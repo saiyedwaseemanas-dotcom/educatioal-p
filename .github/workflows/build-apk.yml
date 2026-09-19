@@ -44,10 +44,11 @@ jobs:
       - name: Build Web Assets (Vite)
         run: npm run build
 
-      - name: Initialize or Sync Capacitor Android
+      - name: Initialize or Re-sync Native Android Platform
         run: |
-          if [ ! -d "android" ]; then
-            echo "Android directory not found, adding Android platform..."
+          if [ ! -f "android/build.gradle" ]; then
+            echo "android/build.gradle not found! Cleaning partial directory and initializing clean platform..."
+            rm -rf android
             npx --yes @capacitor/cli add android
           fi
           echo "Syncing web assets to native Android..."
@@ -55,18 +56,14 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          build-root-directory: android
 
-      - name: Configure Android SDK Location and Licenses
+      - name: Configure Android SDK Location and Permissions
         run: |
-          mkdir -p android
           echo "sdk.dir=$ANDROID_HOME" > android/local.properties
           if [ -f "android/gradlew" ]; then
             sed -i -e 's/\r$//' android/gradlew
             chmod +x android/gradlew
           fi
-          yes | sdkmanager --licenses 2>/dev/null || true
 
       - name: Build Debug APK
         if: ${{ github.event.inputs.build_type != 'release' }}
