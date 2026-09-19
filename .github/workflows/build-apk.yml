@@ -66,31 +66,25 @@ jobs:
         if: ${{ github.event.inputs.build_type != 'release' }}
         run: |
           cd android
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Build Release APK (Unsigned)
         if: ${{ github.event.inputs.build_type == 'release' }}
         run: |
           cd android
-          ./gradlew assembleRelease --stacktrace
+          ./gradlew assembleRelease --no-daemon --stacktrace
 
-      - name: Locate and Rename APK
+      - name: Locate and Prepare APK
         run: |
           mkdir -p output-apk
-          if [ -f "android/app/build/outputs/apk/debug/app-debug.apk" ]; then
-            cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/app-debug.apk
-            echo "Copied debug APK"
-          fi
-          if [ -f "android/app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
-            cp android/app/build/outputs/apk/release/app-release-unsigned.apk output-apk/app-release-unsigned.apk
-            echo "Copied release APK"
-          fi
-          ls -la output-apk
+          find android/app/build/outputs/apk -type f -name "*.apk" -exec cp {} output-apk/ \;
+          echo "Generated APK files:"
+          ls -la output-apk/
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk-${{ github.sha }}
+          name: app-apk-${{ github.run_number }}
           path: output-apk/*.apk
           retention-days: 30
 

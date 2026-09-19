@@ -28,13 +28,31 @@ export const GitHubWorkflowViewer: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={handleCopy}
-          className="inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs transition-colors shadow-md shadow-emerald-500/20"
-        >
-          {copied ? <Check className="w-4 h-4 text-slate-950" /> : <Copy className="w-4 h-4" />}
-          <span>{copied ? 'Copied to Clipboard!' : 'Copy Entire Workflow'}</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => {
+              const blob = new Blob([GITHUB_WORKFLOW_CONTENT], { type: 'text/yaml' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'build-apk.yml';
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="inline-flex items-center justify-center space-x-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs transition-colors"
+          >
+            <Download className="w-4 h-4 text-emerald-400" />
+            <span>Download build-apk.yml</span>
+          </button>
+
+          <button
+            onClick={handleCopy}
+            className="inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs transition-colors shadow-md shadow-emerald-500/20"
+          >
+            {copied ? <Check className="w-4 h-4 text-slate-950" /> : <Copy className="w-4 h-4" />}
+            <span>{copied ? 'Copied to Clipboard!' : 'Copy Workflow Code'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Workflow highlights cards */}
