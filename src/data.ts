@@ -51,14 +51,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Set up Java JDK 17
+      - name: Set up Java JDK 21
         uses: actions/setup-java@v5
         with:
           distribution: "temurin"
-          java-version: "17"
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+          java-version: "21"
 
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
@@ -75,7 +72,12 @@ jobs:
           echo "Syncing web assets to native Android..."
           npx --yes @capacitor/cli sync android
 
-      - name: Configure Android SDK Location
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          build-root-directory: android
+
+      - name: Configure Android SDK Location and Licenses
         run: |
           mkdir -p android
           echo "sdk.dir=$ANDROID_HOME" > android/local.properties
@@ -83,6 +85,7 @@ jobs:
             sed -i -e 's/\r$//' android/gradlew
             chmod +x android/gradlew
           fi
+          yes | sdkmanager --licenses 2>/dev/null || true
 
       - name: Build Debug APK
         if: \${{ github.event.inputs.build_type != 'release' }}
