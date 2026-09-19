@@ -46,19 +46,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
@@ -75,8 +75,9 @@ jobs:
           echo "Syncing web assets to native Android..."
           npx cap sync android
 
-      - name: Grant Execute Permission for Gradlew
+      - name: Configure Android SDK Location
         run: |
+          echo "sdk.dir=$ANDROID_HOME" > android/local.properties
           if [ -f "android/gradlew" ]; then
             chmod +x android/gradlew
           fi
